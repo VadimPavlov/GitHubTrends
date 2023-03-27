@@ -11,6 +11,10 @@
 		FD29095829D1A9B300B00BED /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD29095729D1A9B300B00BED /* ContentView.swift */; };
 		FD29095A29D1A9B400B00BED /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FD29095929D1A9B400B00BED /* Assets.xcassets */; };
 		FD29095E29D1A9B400B00BED /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FD29095D29D1A9B400B00BED /* Preview Assets.xcassets */; };
+		FD29096629D1AA9F00B00BED /* API in Resources */ = {isa = PBXBuildFile; fileRef = FD29096529D1AA9F00B00BED /* API */; };
+		FD29096B29D1AB0E00B00BED /* API in Frameworks */ = {isa = PBXBuildFile; productRef = FD29096A29D1AB0E00B00BED /* API */; };
+		FD29096D29D1AB0E00B00BED /* Database in Frameworks */ = {isa = PBXBuildFile; productRef = FD29096C29D1AB0E00B00BED /* Database */; };
+		FD29096F29D1AB0F00B00BED /* Utilities in Frameworks */ = {isa = PBXBuildFile; productRef = FD29096E29D1AB0F00B00BED /* Utilities */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -20,6 +24,9 @@
 		FD29095929D1A9B400B00BED /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		FD29095B29D1A9B400B00BED /* GitHubTrends.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = GitHubTrends.entitlements; sourceTree = "<group>"; };
 		FD29095D29D1A9B400B00BED /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		FD29096529D1AA9F00B00BED /* API */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = API; sourceTree = "<group>"; };
+		FD29096729D1AAD200B00BED /* Database */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Database; sourceTree = "<group>"; };
+		FD29096829D1AAFF00B00BED /* Utilities */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Utilities; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -27,6 +34,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FD29096B29D1AB0E00B00BED /* API in Frameworks */,
+				FD29096F29D1AB0F00B00BED /* Utilities in Frameworks */,
+				FD29096D29D1AB0E00B00BED /* Database in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -37,7 +47,9 @@
 			isa = PBXGroup;
 			children = (
 				FD29095429D1A9B300B00BED /* GitHubTrends */,
+				FD29096429D1AA9F00B00BED /* Packages */,
 				FD29095329D1A9B300B00BED /* Products */,
+				FD29096929D1AB0E00B00BED /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -69,6 +81,23 @@
 			path = "Preview Content";
 			sourceTree = "<group>";
 		};
+		FD29096429D1AA9F00B00BED /* Packages */ = {
+			isa = PBXGroup;
+			children = (
+				FD29096529D1AA9F00B00BED /* API */,
+				FD29096729D1AAD200B00BED /* Database */,
+				FD29096829D1AAFF00B00BED /* Utilities */,
+			);
+			path = Packages;
+			sourceTree = "<group>";
+		};
+		FD29096929D1AB0E00B00BED /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -85,6 +114,11 @@
 			dependencies = (
 			);
 			name = GitHubTrends;
+			packageProductDependencies = (
+				FD29096A29D1AB0E00B00BED /* API */,
+				FD29096C29D1AB0E00B00BED /* Database */,
+				FD29096E29D1AB0F00B00BED /* Utilities */,
+			);
 			productName = GitHubTrends;
 			productReference = FD29095229D1A9B300B00BED /* GitHubTrends.app */;
 			productType = "com.apple.product-type.application";
@@ -127,6 +161,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FD29096629D1AA9F00B00BED /* API in Resources */,
 				FD29095E29D1A9B400B00BED /* Preview Assets.xcassets in Resources */,
 				FD29095A29D1A9B400B00BED /* Assets.xcassets in Resources */,
 			);
@@ -350,6 +385,21 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		FD29096A29D1AB0E00B00BED /* API */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = API;
+		};
+		FD29096C29D1AB0E00B00BED /* Database */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Database;
+		};
+		FD29096E29D1AB0F00B00BED /* Utilities */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Utilities;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = FD29094A29D1A9B300B00BED /* Project object */;
 }
