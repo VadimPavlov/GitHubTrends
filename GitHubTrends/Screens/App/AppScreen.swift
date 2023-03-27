@@ -18,9 +18,10 @@ struct AppScreen: View {
                 .tag(AppModel.Destination.trends)
             
             FavoritesScreen(model: model.favoritesModel)
-                .tabItem { Label("Favorites", systemImage: "star")}
+                .tabItem { Label("Favorites", systemImage: "heart")}
                 .tag(AppModel.Destination.favorites)
-        }.navigationViewStyle(.stack)
+        }
+        //.navigationViewStyle(.stack)
     }
 }
 

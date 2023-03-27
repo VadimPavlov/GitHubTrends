@@ -15,22 +15,44 @@ struct TrendsScreen: View {
     
     var body: some View {
         NavigationView {
-            ScrollView {
-                LazyVStack {
-                    ForEach(model.repositories) { repo in
-                        Button {
-                            model.select(repository: repo)
-                        } label: {
-                            RepositoryCell(repository: repo)
-                        }
-                    }
+            listView
+            .navigationTitle("Trends")
+            .toolbar {
+                ToolbarItem(placement: .principal) {
+                    timelineView
                 }
             }
-            .navigationTitle("Trends")
             .sheet(unwrapping: $model.destination, case: /TrendsModel.Destination.detail) { $model in
                 RepositoryDetailScreen(model: model)
             }
         }
+    }
+    
+    // MARK: Views
+    
+    var listView: some View {
+        ScrollView {
+            LazyVStack {
+                ForEach(model.repositories) { repo in
+                    Button {
+                        model.select(repository: repo)
+                    } label: {
+                        RepositoryCell(repository: repo)
+                    }
+                }
+            }
+        }
+    }
+    
+    var timelineView: some View {
+        Picker(selection: $model.timeline) {
+            ForEach(TrendsModel.Timeline.allCases) { timeline in
+                Text(timeline.title).tag(timeline)
+            }
+        } label: {
+            EmptyView()
+        }
+        .pickerStyle(.segmented)
     }
 }
 

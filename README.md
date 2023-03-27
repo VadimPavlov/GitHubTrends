@@ -11,3 +11,8 @@
 
 ### Network
 + All requests and responses are containing *GH* prefix to indicate resource they are belonging too (*G*it*H*ub) 
+
+
+### Unimplemented
++ Using R.swift for generating staticly available resources (assets, colors, fonts, localization, etc)
++ Using SwiftLint for code linting

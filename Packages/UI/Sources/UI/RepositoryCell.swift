@@ -25,7 +25,10 @@ public struct RepositoryCell: View {
             VStack(alignment: .leading) {
                 Text("@" + author)
                 Text(title).font(.headline)
-                Text(description).italic()
+                Text(description)
+                    .italic()
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .multilineTextAlignment(.leading)
             }
             VStack {
                 Image(systemName: "star.fill")
