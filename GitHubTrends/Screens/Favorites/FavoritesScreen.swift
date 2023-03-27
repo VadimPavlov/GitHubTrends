@@ -14,7 +14,9 @@ struct FavoritesScreen: View {
     
     var body: some View {
         NavigationView {
-            NavigationLink("Details Screen", destination: RepositoryDetailScreen(model: .init(repository: GHRepository(id: 1)))).navigationTitle("Favorites")
+            NavigationLink("Details Screen",
+                           destination: RepositoryDetailScreen(model: .init(repository: .mocks[0])))
+            .navigationTitle("Favorites")
         }
     }
 }

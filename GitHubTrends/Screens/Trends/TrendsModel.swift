@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import API
 
 final class TrendsModel: ObservableObject {
     
@@ -13,9 +14,15 @@ final class TrendsModel: ObservableObject {
         case detail(RepositoryDetailModel)
     }
     
-    var destination: Destination?
+    @Published var destination: Destination?
+    @Published var repositories: [GHRepository]
     
-    init(destination: Destination? = nil) {
+    init(destination: Destination? = nil, repositories: [GHRepository] = []) {
         self.destination = destination
+        self.repositories = repositories
+    }
+    
+    func select(repository: GHRepository) {
+        self.destination = .detail(RepositoryDetailModel(repository: repository))
     }
 }

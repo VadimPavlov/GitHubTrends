@@ -6,10 +6,11 @@
 //
 
 import SwiftUI
+import API
 
 @main
 struct GitHubTrendsApp: App {
-    @StateObject var model = AppModel()
+    @StateObject var model = AppModel(trendsModel: .init(repositories: GHRepository.mocks))
     
     var body: some Scene {
         WindowGroup {

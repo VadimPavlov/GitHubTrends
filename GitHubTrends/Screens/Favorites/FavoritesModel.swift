@@ -13,7 +13,7 @@ final class FavoritesModel: ObservableObject {
         case detail(RepositoryDetailModel)
     }
     
-    var destination: Destination?
+    @Published var destination: Destination?
     
     init(destination: Destination? = nil) {
         self.destination = destination

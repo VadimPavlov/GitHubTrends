@@ -11,15 +11,23 @@ import API
 struct RepositoryDetailScreen: View {
     
     @ObservedObject var model: RepositoryDetailModel
+    @Environment(\.dismiss) var dismiss
     
     var body: some View {
-        Text("Repository Detail Screen")
-            .navigationTitle(Text("Respository: \(model.repository.id)"))
+        NavigationView {
+            Text("Repository Detail Screen")
+                .navigationTitle(model.repository.name)
+                .toolbar {
+                    Button(action: { dismiss() }) {
+                        Image(systemName: "xmark")
+                    }
+                }
+        }
     }
 }
 
 struct RepositoryDetailScreen_Previews: PreviewProvider {
     static var previews: some View {
-        RepositoryDetailScreen(model: .init(repository: GHRepository(id: 0)))
+        RepositoryDetailScreen(model: .init(repository: GHRepository.mocks[0]))
     }
 }

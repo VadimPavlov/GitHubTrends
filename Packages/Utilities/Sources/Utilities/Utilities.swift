@@ -1,6 +1,8 @@
-public struct Utilities {
-    public private(set) var text = "Hello, World!"
+//
+//  Utilities.swift
+//  
+//
+//  Created by Vadym Pavlov on 27.03.2023.
+//
 
-    public init() {
-    }
-}
+import Foundation
