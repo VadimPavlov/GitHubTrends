@@ -10,7 +10,7 @@ import API
 
 @main
 struct GitHubTrendsApp: App {
-    @StateObject var model = AppModel(trendsModel: .init(repositories: GHRepository.mocks))
+    @StateObject var model = AppModel()
     
     var body: some Scene {
         WindowGroup {

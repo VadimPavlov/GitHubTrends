@@ -38,17 +38,21 @@ public extension API {
         let httpResponse = response as? HTTPURLResponse
         let code = httpResponse?.statusCode ?? 0
         let path = request.url?.path ?? ""
-        let userInfo = [NSLocalizedDescriptionKey: path]
+        
+        func userInfo() -> [String: String] {
+            [NSLocalizedDescriptionKey: String(data: data, encoding: .utf8) ?? path]
+        }
         switch code {
         case 200..<300: break
             // 3xx redirections
-        case 300..<400: throw URLError(.httpTooManyRedirects, userInfo: userInfo)
+        case 300..<400: throw URLError(.httpTooManyRedirects, userInfo: userInfo())
             // 4xx client errors
-        case 400: throw URLError(.badURL, userInfo: userInfo)
-        case 401: throw URLError(.userAuthenticationRequired, userInfo: userInfo)
-        case 400..<500: throw URLError(.resourceUnavailable, userInfo: userInfo)
-        default: throw URLError(.badServerResponse, userInfo: userInfo)
+        case 400: throw URLError(.badURL, userInfo: userInfo())
+        case 401: throw URLError(.userAuthenticationRequired, userInfo: userInfo())
+        case 400..<500: throw URLError(.resourceUnavailable, userInfo: userInfo())
+        default: throw URLError(.badServerResponse, userInfo: userInfo())
         }
+         
         return (data, httpResponse)
     }
     

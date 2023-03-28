@@ -40,13 +40,15 @@ struct TrendsScreen: View {
     
     // MARK: Views
     var listView: some View {
-        ScrollView {
-            LazyVStack {
-                ForEach(model.repositories) { repo in
-                    Button {
-                        model.select(repository: repo)
-                    } label: {
-                        RepositoryCell(repository: repo)
+        LoadingView(job: model.repositories, retry: "Can't load respositories") { repositories in
+            ScrollView {
+                LazyVStack {
+                    ForEach(repositories ?? []) { repo in
+                        Button {
+                            model.select(repository: repo)
+                        } label: {
+                            RepositoryCell(repository: repo)
+                        }
                     }
                 }
             }

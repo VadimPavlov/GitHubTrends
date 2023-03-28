@@ -9,6 +9,7 @@ import Foundation
 import API
 import SwiftUI
 import SwiftUINavigation
+import Utilities
 
 final class TrendsModel: ObservableObject {
     
@@ -25,51 +26,39 @@ final class TrendsModel: ObservableObject {
         var id: String { rawValue }
         var title: String { rawValue.capitalized } // TODO: use (localized) strings
     }
-    
+
+    let repositories: Job<[GHRepository]>
     @Published var destination: Destination?
-    @Published var repositories: [GHRepository]
     @AppStorage("timeline") var timeline: Timeline = .day {
-        didSet { loadRepositories() }
+        didSet { repositories.reload() }
     }
     
-    let api = GitHubAPI()
+    let api = GitHubAPI() // TODO: dependency injection
     
-    init(destination: Destination? = nil, repositories: [GHRepository] = []) {
+    init(destination: Destination? = nil, repositories: [GHRepository]? = nil) {
         self.destination = destination
-        self.repositories = repositories
-        self.loadRepositories()
+        self.repositories = Job(result: repositories)
+        
+        self.repositories.work = { [unowned self] in
+            let date = self.date(from: timeline)
+            let response = try await self.api.searchRepositories(query: [.created(.greater, date)],
+                                        sort: .stars, order: .desc)
+            return response.items
+        }
+        
+        self.repositories.run()
     }
     
     func select(repository: GHRepository) {
         self.destination = .detail(RepositoryDetailModel(repository: repository))
     }
     
-    func loadRepositories() {
-        Task { @MainActor in
-            do {
-                if let date = date(from: timeline) {
-                    let response = try await self.api.searchRepositories(query: [.created(.greater, date)], sort: .stars, order: .desc)
-                    self.repositories = response.items
-                } else {
-                    let error = AlertError(title: {
-                        TextState("Error")
-                    }, message: {
-                        TextState("Can't calcualte a date")
-                    })
-                    self.destination = .alert(error)
-                }
-            } catch {
-                self.destination = .alert(AlertError(error: error))
-            }
-        }
-    }
-    
-    func date(from timeline: Timeline) -> Date? {
+    func date(from timeline: Timeline) -> Date {
         let calendar = Calendar(identifier: .iso8601)
         switch timeline {
-        case .day: return calendar.dayAgo()
-        case .week: return calendar.weekAgo()
-        case .month: return calendar.monthAgo()
+        case .day: return calendar.dayAgo()!
+        case .week: return calendar.weekAgo()!
+        case .month: return calendar.monthAgo()!
         }
     }
 }

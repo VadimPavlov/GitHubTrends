@@ -22,19 +22,22 @@ public struct RepositoryCell: View {
     
     public var body: some View {
         HStack(alignment: .top) {
-            Circle().fill().frame(width: 50, height: 50)
+            VStack {
+                Circle().fill().frame(width: 50, height: 50)
+                Image(systemName: "star.fill")
+                Text("\(stars)")
+            }.font(.headline)
+
             VStack(alignment: .leading) {
                 Text("@" + author)
                 Text(title).font(.headline)
                 Text(description)
                     .italic()
+                    .lineLimit(2)
+                    .padding(.top, 1)
                     .frame(maxWidth: .infinity, alignment: .leading)
-                    .multilineTextAlignment(.leading)
             }
-            VStack {
-                Image(systemName: "star.fill")
-                Text("\(stars)")
-            }.font(.headline)
+            .multilineTextAlignment(.leading)
         }.padding()
     }
 }

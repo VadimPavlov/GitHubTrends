@@ -23,11 +23,7 @@ extension AlertState {
                 TextState("Ok")
             }
         } message: {
-            #if DEBUG
-            TextState((error as NSError).debugDescription)
-            #else
             TextState(error.localizedDescription)
-            #endif
         }
     }
 }
