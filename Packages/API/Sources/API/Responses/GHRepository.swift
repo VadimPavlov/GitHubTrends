@@ -8,7 +8,7 @@
 import Foundation
 
 public struct GHRepository: Decodable, Hashable, Identifiable {
-    public init(id: Int, name: String, description: String, createdAt: Date, htmlUrl: URL, owner: GHOwner, stargazersCount: Int, language: String? = nil, forks: Int) {
+    public init(id: Int, name: String, description: String?, createdAt: Date, htmlUrl: URL, owner: GHOwner, stargazersCount: Int, language: String? = nil, forks: Int) {
         self.id = id
         self.name = name
         self.description = description
@@ -22,7 +22,7 @@ public struct GHRepository: Decodable, Hashable, Identifiable {
     
     public let id: Int
     public let name: String
-    public let description: String
+    public let description: String?
     public let createdAt: Date
     public let htmlUrl: URL
     public let owner: GHOwner

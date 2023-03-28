@@ -32,11 +32,11 @@ public extension API {
         return request
     }
     
-    func fetch<D: Decodable>(request: URLRequest) async throws -> D {
+    func response(for request: URLRequest) async throws -> (Data, HTTPURLResponse?) {
         typealias DataResponse = (Data, URLResponse)
         let (data, response) = try await session.data(for: request)
-        let urlResponse = response as? HTTPURLResponse
-        let code = urlResponse?.statusCode ?? 0
+        let httpResponse = response as? HTTPURLResponse
+        let code = httpResponse?.statusCode ?? 0
         let path = request.url?.path ?? ""
         let userInfo = [NSLocalizedDescriptionKey: path]
         switch code {
@@ -49,6 +49,11 @@ public extension API {
         case 400..<500: throw URLError(.resourceUnavailable, userInfo: userInfo)
         default: throw URLError(.badServerResponse, userInfo: userInfo)
         }
+        return (data, httpResponse)
+    }
+    
+    func fetch<D: Decodable>(request: URLRequest) async throws -> D {
+        let (data, _) = try await response(for: request)
         return try decoder.decode(D.self, from: data)
     }
 }

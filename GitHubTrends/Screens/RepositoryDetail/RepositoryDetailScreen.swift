@@ -17,8 +17,7 @@ struct RepositoryDetailScreen: View {
                 VStack {
                     Group {
                         headerView
-                        Text(model.repository.description)
-
+                        Text(model.repository.fullDescription)
                     }.padding()
                 }
             }

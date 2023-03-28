@@ -29,6 +29,7 @@
 		FD4A046029D1E15E00ABDA0A /* UI in Frameworks */ = {isa = PBXBuildFile; productRef = FD4A045F29D1E15E00ABDA0A /* UI */; };
 		FD4A046329D1E80300ABDA0A /* SwiftUINavigation in Frameworks */ = {isa = PBXBuildFile; productRef = FD4A046229D1E80300ABDA0A /* SwiftUINavigation */; };
 		FD4A046529D1EA9200ABDA0A /* Initializers.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD4A046429D1EA9200ABDA0A /* Initializers.swift */; };
+		FD4A046929D3327D00ABDA0A /* AlertError.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD4A046829D3327D00ABDA0A /* AlertError.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -52,6 +53,7 @@
 		FD4A045729D1E04700ABDA0A /* API */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = API; sourceTree = "<group>"; };
 		FD4A045E29D1E14F00ABDA0A /* UI */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = UI; sourceTree = "<group>"; };
 		FD4A046429D1EA9200ABDA0A /* Initializers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Initializers.swift; sourceTree = "<group>"; };
+		FD4A046829D3327D00ABDA0A /* AlertError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertError.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -169,6 +171,7 @@
 			children = (
 				FD29099029D1C09300B00BED /* Mocks.swift */,
 				FD4A046429D1EA9200ABDA0A /* Initializers.swift */,
+				FD4A046829D3327D00ABDA0A /* AlertError.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -276,6 +279,7 @@
 				FD29098B29D1AE5B00B00BED /* AppModel.swift in Sources */,
 				FD29097F29D1ACFF00B00BED /* RepositoryDetailModel.swift in Sources */,
 				FD29097829D1AC0E00B00BED /* FavoritesScreen.swift in Sources */,
+				FD4A046929D3327D00ABDA0A /* AlertError.swift in Sources */,
 				FD29095629D1A9B300B00BED /* GitHubTrendsApp.swift in Sources */,
 				FD29097A29D1AC1E00B00BED /* FavoritesModel.swift in Sources */,
 				FD29099129D1C09300B00BED /* Mocks.swift in Sources */,

@@ -11,6 +11,6 @@ import SwiftUI
 extension RepositoryCell {
     init(repository: GHRepository) {
         self.init(title: repository.name, author: repository.owner.login,
-                  description: repository.description, stars: repository.stargazersCount)
+                  description: repository.fullDescription, stars: repository.stargazersCount)
     }
 }
