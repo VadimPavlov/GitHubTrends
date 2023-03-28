@@ -8,8 +8,18 @@
 import Foundation
 import API
 import SwiftUI
-import SwiftUINavigation
 import Utilities
+
+enum ValidationError: LocalizedError {
+    case message(String)
+    
+    var errorDescription: String? {
+        switch self {
+        case .message(let message):
+            return message
+        }
+    }
+}
 
 final class TrendsModel: ObservableObject {
     
@@ -40,7 +50,7 @@ final class TrendsModel: ObservableObject {
         self.repositories = Job(result: repositories)
         
         self.repositories.work = { [unowned self] in
-            let date = self.date(from: timeline)
+            let date = try self.date(from: timeline)
             let response = try await self.api.searchRepositories(query: [.created(.greater, date)],
                                         sort: .stars, order: .desc)
             return response.items
@@ -53,12 +63,16 @@ final class TrendsModel: ObservableObject {
         self.destination = .detail(RepositoryDetailModel(repository: repository))
     }
     
-    func date(from timeline: Timeline) -> Date {
+    func date(from timeline: Timeline) throws -> Date {
         let calendar = Calendar(identifier: .iso8601)
+        let date: Date?
         switch timeline {
-        case .day: return calendar.dayAgo()!
-        case .week: return calendar.weekAgo()!
-        case .month: return calendar.monthAgo()!
+        case .day: date = calendar.dayAgo()
+        case .week: date = calendar.weekAgo()
+        case .month: date = calendar.monthAgo()
         }
+        
+        guard let date = date else { throw ValidationError.message("Can't calculate a date") }
+        return date
     }
 }

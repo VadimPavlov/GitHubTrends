@@ -22,8 +22,8 @@ public final class GitHubAPI: API {
     }
     
     struct Link {
-        let next: String
-        let last: String
+        let next: URL
+        let last: URL
     }
     
     func link(from response: HTTPURLResponse?) -> Link? {
@@ -34,10 +34,17 @@ public final class GitHubAPI: API {
         
         if let link = response?.allHeaderFields["Link"] as? String,
            let next = try? link.regex(pattern: rel("next")).first,
-           let last = try? link.regex(pattern: rel("last")).first {
-            return Link(next: next, last: last)
+           let last = try? link.regex(pattern: rel("last")).first,
+           let nextURL = URL(string: next), let lastURL = URL(string: last) {
+            return Link(next: nextURL, last: lastURL)
         }
         return nil
+    }
+    
+    public func userInfo(from response: HTTPURLResponse?, data: Data) -> [String : String] {
+        let error = try? decoder.decode(GHError.self, from: data)
+        let path = response?.url?.path ?? ""
+        return [NSLocalizedDescriptionKey: error?.message ?? path]
     }
 }
 

@@ -8,22 +8,24 @@
 import SwiftUI
 
 public struct RepositoryCell: View {
-    public init(title: String, author: String, description: String, stars: Int) {
+    public init(title: String, author: String, avatar: URL?, description: String, stars: Int) {
         self.title = title
         self.author = author
+        self.avatar = avatar
         self.description = description
         self.stars = stars
     }
     
     let title: String
     let author: String
+    let avatar: URL?
     let description: String
     let stars: Int
     
     public var body: some View {
         HStack(alignment: .top) {
             VStack {
-                Circle().fill().frame(width: 50, height: 50)
+                AvatarView(url: avatar)
                 Image(systemName: "star.fill")
                 Text("\(stars)")
             }.font(.headline)
@@ -44,6 +46,6 @@ public struct RepositoryCell: View {
 
 struct RepositoryCell_Previews: PreviewProvider {
     static var previews: some View {
-        RepositoryCell(title: "Repository name title", author: "Author", description: "Somewhat long description for the repository", stars: 123)
+        RepositoryCell(title: "Repository name title", author: "Author", avatar: nil, description: "Somewhat long description for the repository", stars: 123)
     }
 }

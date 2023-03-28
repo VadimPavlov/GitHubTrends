@@ -21,7 +21,6 @@ struct AppScreen: View {
                 .tabItem { Label("Favorites", systemImage: "heart")}
                 .tag(AppModel.Destination.favorites)
         }
-        //.navigationViewStyle(.stack)
     }
 }
 

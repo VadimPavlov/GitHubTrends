@@ -11,9 +11,16 @@ public protocol API {
     var baseURL: String { get }
     var session: URLSession { get }
     var decoder: JSONDecoder { get }
+
+    func userInfo(from response: HTTPURLResponse?, data: Data) -> [String: String]
+
 }
 
 public extension API {
+    func userInfo(from response: HTTPURLResponse?, data: Data) -> [String: String] {
+        [NSLocalizedDescriptionKey: response?.url?.path ?? ""]
+    }
+
     func request(with path: String, method: HTTPMethod = .get, params: [String: String?] = [:]) throws -> URLRequest {
         var components = URLComponents(string: baseURL)
         components?.path += path
@@ -37,11 +44,9 @@ public extension API {
         let (data, response) = try await session.data(for: request)
         let httpResponse = response as? HTTPURLResponse
         let code = httpResponse?.statusCode ?? 0
-        let path = request.url?.path ?? ""
         
-        func userInfo() -> [String: String] {
-            [NSLocalizedDescriptionKey: String(data: data, encoding: .utf8) ?? path]
-        }
+        let userInfo = { self.userInfo(from: httpResponse, data: data) }
+        
         switch code {
         case 200..<300: break
             // 3xx redirections

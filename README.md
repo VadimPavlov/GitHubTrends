@@ -17,3 +17,4 @@
 ### Unimplemented
 + Using R.swift for generating staticly available resources (assets, colors, fonts, localization, etc)
 + Using SwiftLint for code linting
++ CachedAsyncImage uses URLCache which is potentially thread-unsafe 
