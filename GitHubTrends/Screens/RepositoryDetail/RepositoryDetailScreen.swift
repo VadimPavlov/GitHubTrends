@@ -11,27 +11,24 @@ import API
 struct RepositoryDetailScreen: View {
     
     @ObservedObject var model: RepositoryDetailModel
-    @Environment(\.dismiss) var dismiss
     
     var body: some View {
-        NavigationView {
             ScrollView {
                 VStack {
                     Group {
                         headerView
                         Text(model.repository.description)
-                        footerView
 
                     }.padding()
                 }
             }
             .navigationTitle(model.repository.name)
             .toolbar {
-                Button(action: { dismiss() }) {
-                    Image(systemName: "xmark")
-                }
+                    Link(destination: model.repository.htmlUrl) {
+                        Image(systemName: "safari")
+                    }
+                    favoriteButton
             }
-        }
     }
     
     @ViewBuilder
@@ -61,20 +58,12 @@ struct RepositoryDetailScreen: View {
         }
     }
     
-    var footerView: some View {
-        HStack {
-            Link(destination: model.repository.htmlUrl) {
-                Image(systemName: "safari")
-            }
-            Rectangle().fill(Color.accentColor).frame(width: 1, height: 20)
-            Button(action: {
-                withAnimation {
-                    model.toogleFavorite()
-                }
-            }) {
-                Image(systemName: model.isFavorite ? "heart.fill" : "heart")
-            }
-        }.font(.title)
+    var favoriteButton: some View {
+        Button(action: {
+            withAnimation { model.toogleFavorite() }
+        }) {
+            Image(systemName: model.isFavorite ? "heart.fill" : "heart")
+        }
     }
 }
 

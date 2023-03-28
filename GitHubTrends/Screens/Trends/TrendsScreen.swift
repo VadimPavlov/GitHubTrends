@@ -11,6 +11,7 @@ import SwiftUI
 import SwiftUINavigation
 
 struct TrendsScreen: View {
+    
     @ObservedObject var model: TrendsModel
     
     var body: some View {
@@ -22,14 +23,21 @@ struct TrendsScreen: View {
                     timelineView
                 }
             }
-            .sheet(unwrapping: $model.destination, case: /TrendsModel.Destination.detail) { $model in
-                RepositoryDetailScreen(model: model)
+            .background {
+                // a workaround to avoid multiple NavigationLinks in ForEach
+                // https://github.com/pointfreeco/swiftui-navigation/discussions/2
+                NavigationLink(unwrapping: $model.destination,
+                               case: /TrendsModel.Destination.detail) { _ in
+                } destination: { $model in
+                    RepositoryDetailScreen(model: model)
+                } label: {
+                    EmptyView()
+                }
             }
         }
     }
     
     // MARK: Views
-    
     var listView: some View {
         ScrollView {
             LazyVStack {

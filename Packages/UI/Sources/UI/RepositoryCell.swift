@@ -19,6 +19,7 @@ public struct RepositoryCell: View {
     let author: String
     let description: String
     let stars: Int
+    
     public var body: some View {
         HStack(alignment: .top) {
             Circle().fill().frame(width: 50, height: 50)
