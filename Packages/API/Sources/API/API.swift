@@ -12,13 +12,13 @@ public protocol API {
     var session: URLSession { get }
     var decoder: JSONDecoder { get }
 
-    func userInfo(from response: HTTPURLResponse?, data: Data) -> [String: String]
+    func errorUserInfo(from response: HTTPURLResponse?, data: Data) -> [String: String]
 
 }
 
 public extension API {
     
-    func userInfo(from response: HTTPURLResponse?, data: Data) -> [String: String] {
+    func errorUserInfo(from response: HTTPURLResponse?, data: Data) -> [String: String] {
         [NSLocalizedDescriptionKey: response?.url?.path ?? ""]
     }
 
@@ -47,7 +47,7 @@ public extension API {
         let httpResponse = response as? HTTPURLResponse
         
         let code = httpResponse?.statusCode ?? 0
-        let userInfo = { self.userInfo(from: httpResponse, data: data) }
+        let userInfo = { self.errorUserInfo(from: httpResponse, data: data) }
 
         switch code {
         case 200..<300: break
@@ -63,10 +63,5 @@ public extension API {
         }
          
         return (data, httpResponse)
-    }
-    
-    func fetch<D: Decodable>(request: URLRequest) async throws -> D {
-        let (data, _) = try await response(for: request)
-        return try decoder.decode(D.self, from: data)
     }
 }

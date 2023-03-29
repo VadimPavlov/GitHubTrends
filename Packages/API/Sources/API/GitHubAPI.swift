@@ -38,7 +38,7 @@ public final class GitHubAPI: API {
         return GHLink(next: url("next"), prev: url("prev"), first: url("first"), last: url("last"))
     }
     
-    public func userInfo(from response: HTTPURLResponse?, data: Data) -> [String : String] {
+    public func errorUserInfo(from response: HTTPURLResponse?, data: Data) -> [String : String] {
         let error = try? decoder.decode(GHError.self, from: data)
         let path = response?.url?.path ?? ""
         return [NSLocalizedDescriptionKey: error?.message ?? path]
