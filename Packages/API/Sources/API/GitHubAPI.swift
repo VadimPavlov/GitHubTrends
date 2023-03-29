@@ -8,6 +8,11 @@
 import Foundation
 import Utilities
 
+public struct Linked<D: Decodable> {
+    public let result: D
+    public let link: GHLink?
+}
+
 public final class GitHubAPI: API {
     
     public let baseURL = "https://api.github.com/"
@@ -20,25 +25,17 @@ public final class GitHubAPI: API {
         decoder.keyDecodingStrategy = .convertFromSnakeCase
         decoder.dateDecodingStrategy = .iso8601
     }
-    
-    struct Link {
-        let next: URL
-        let last: URL
-    }
-    
-    func link(from response: HTTPURLResponse?) -> Link? {
         
-        func rel(_ value: String) -> String {
-            "(?<=<).+?(?=>; rel=\"\(value)\")"
+    func link(from response: HTTPURLResponse?) -> GHLink? {
+        guard let link = response?.allHeaderFields["Link"] as? String else { return nil }
+        
+        func url(_ rel: String) -> URL? {
+            let pattern = "[^<>]+(?=>; rel=\"\(rel)\")"
+            let value = try? link.regex(pattern: pattern).first
+            return value.flatMap { URL(string: $0) }
         }
         
-        if let link = response?.allHeaderFields["Link"] as? String,
-           let next = try? link.regex(pattern: rel("next")).first,
-           let last = try? link.regex(pattern: rel("last")).first,
-           let nextURL = URL(string: next), let lastURL = URL(string: last) {
-            return Link(next: nextURL, last: lastURL)
-        }
-        return nil
+        return GHLink(next: url("next"), prev: url("prev"), first: url("first"), last: url("last"))
     }
     
     public func userInfo(from response: HTTPURLResponse?, data: Data) -> [String : String] {
@@ -77,14 +74,18 @@ public extension GitHubAPI {
         case desc
     }
     
-    func searchRepositories(query: [SearchQuery], sort: SearchSort, order: SearchOrder) async throws -> GHSearchResult<GHRepository> {
+    typealias SearchRepositoriesResult = Linked<GHSearchResult<GHRepository>>
+    func searchRepositories(query: [SearchQuery], sort: SearchSort, order: SearchOrder) async throws -> SearchRepositoriesResult {
         let query = query.map { $0.value }.joined(separator: "+")
         let request = try self.request(with: "search/repositories",
                                        params: ["q": query, "sort": sort.rawValue, "order": order.rawValue])
-        let (data, response) = try await self.response(for: request)
-        let link = self.link(from: response)
-        let result = try decoder.decode(GHSearchResult<GHRepository>.self, from: data)
-        return result
+        return try await linked(request: request)
     }
 
+    func linked<D: Decodable>(request: URLRequest) async throws -> Linked<D> {
+        let (data, response) = try await self.response(for: request)
+        let link = self.link(from: response)
+        let result = try decoder.decode(D.self, from: data)
+        return Linked(result: result, link: link)
+    }
 }

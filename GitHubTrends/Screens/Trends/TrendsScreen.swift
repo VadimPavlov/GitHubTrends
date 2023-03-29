@@ -40,31 +40,16 @@ struct TrendsScreen: View {
     
     // MARK: Views
     var listView: some View {
-        LoadingView(job: model.repositories, retry: "Can't load respositories") { repositories in
-            if let repositories = repositories {
-                if repositories.isEmpty {
-                    Text("No repositories for selected period of time")
-                } else {
-                    repositoriesView(repositories)
-                }
+        PaginationView(paginator: model.repositories) { repo in
+            Button {
+                model.select(repository: repo)
+            } label: {
+                RepositoryCell(repository: repo)
             }
+
         }
     }
-    
-    func repositoriesView(_ repositories: [GHRepository]) -> some View {
-        ScrollView {
-            LazyVStack {
-                ForEach(repositories) { repo in
-                    Button {
-                        model.select(repository: repo)
-                    } label: {
-                        RepositoryCell(repository: repo)
-                    }
-                }
-            }
-        }
-    }
-    
+        
     var timelineView: some View {
         Picker(selection: $model.timeline) {
             ForEach(TrendsModel.Timeline.allCases) { timeline in

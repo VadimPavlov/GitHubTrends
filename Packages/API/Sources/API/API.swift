@@ -17,6 +17,7 @@ public protocol API {
 }
 
 public extension API {
+    
     func userInfo(from response: HTTPURLResponse?, data: Data) -> [String: String] {
         [NSLocalizedDescriptionKey: response?.url?.path ?? ""]
     }
@@ -24,10 +25,11 @@ public extension API {
     func request(with path: String, method: HTTPMethod = .get, params: [String: String?] = [:]) throws -> URLRequest {
         var components = URLComponents(string: baseURL)
         components?.path += path
+        
         var httpBody: Data?
         switch method {
         case .get:
-            components?.queryItems = params.map { URLQueryItem(name: $0.key, value: $0.value)}
+            components?.queryItems = params.map { URLQueryItem(name: $0.key, value: $0.value) }
         default:
             httpBody = try JSONSerialization.data(withJSONObject: params)
         }
@@ -39,14 +41,14 @@ public extension API {
         return request
     }
     
-    func response(for request: URLRequest) async throws -> (Data, HTTPURLResponse?) {
-        typealias DataResponse = (Data, URLResponse)
+    typealias DataResponse = (Data, HTTPURLResponse?)
+    func response(for request: URLRequest) async throws -> DataResponse {
         let (data, response) = try await session.data(for: request)
         let httpResponse = response as? HTTPURLResponse
+        
         let code = httpResponse?.statusCode ?? 0
-        
         let userInfo = { self.userInfo(from: httpResponse, data: data) }
-        
+
         switch code {
         case 200..<300: break
             // 3xx redirections
@@ -55,7 +57,9 @@ public extension API {
         case 400: throw URLError(.badURL, userInfo: userInfo())
         case 401: throw URLError(.userAuthenticationRequired, userInfo: userInfo())
         case 400..<500: throw URLError(.resourceUnavailable, userInfo: userInfo())
-        default: throw URLError(.badServerResponse, userInfo: userInfo())
+        default:
+            // 5xx server errors
+            throw URLError(.badServerResponse, userInfo: userInfo())
         }
          
         return (data, httpResponse)

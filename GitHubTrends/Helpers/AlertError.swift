@@ -2,8 +2,9 @@
 //  AlertError.swift
 //  GitHubTrends
 //
-//  Created by Vadym Pavlov on 28.03.2023.
+//  Created by Vadym Pavlov on 29.03.2023.
 //
+
 
 import Foundation
 import SwiftUINavigation

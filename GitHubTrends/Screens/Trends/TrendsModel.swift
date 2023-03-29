@@ -37,26 +37,39 @@ final class TrendsModel: ObservableObject {
         var title: String { rawValue.capitalized } // TODO: use (localized) strings
     }
 
-    let repositories: Job<[GHRepository]>
     @Published var destination: Destination?
     @AppStorage("timeline") var timeline: Timeline = .day {
-        didSet { repositories.reload() }
+        didSet {
+            nextRepositories = nil
+            repositories.clear()
+            repositories.loadFirst()
+        }
     }
     
-    let api = GitHubAPI() // TODO: dependency injection
-    
-    init(destination: Destination? = nil, repositories: [GHRepository]? = nil) {
-        self.destination = destination
-        self.repositories = Job(result: repositories)
-        
-        self.repositories.work = { [unowned self] in
+    var nextRepositories: URL?
+    lazy var repositories = Paginator<GHRepository>(page: 1, size: 30) { [unowned self] page in
+        let response: GitHubAPI.SearchRepositoriesResult
+        if let next = self.nextRepositories {
+            response = try await self.api.linked(request: URLRequest(url: next))
+        } else if page.index == 1 {
             let date = try self.date(from: timeline)
-            let response = try await self.api.searchRepositories(query: [.created(.greater, date)],
-                                        sort: .stars, order: .desc)
-            return response.items
+            response = try await self.api.searchRepositories(query: [.created(.greater, date)],
+                                                            sort: .stars, order: .desc)
+        } else {
+            // we reached the last page, there is no link to a next page
+            return []
         }
-        
-        self.repositories.run()
+        self.nextRepositories = response.link?.last
+        return response.result.items
+    }
+    
+    // TODO: dependency injection
+    let api = GitHubAPI()
+    let calendar = Calendar(identifier: .iso8601)
+
+    init(destination: Destination? = nil, repositories: [GHRepository] = []) {
+        self.destination = destination
+        self.repositories.items = repositories
     }
     
     func select(repository: GHRepository) {
@@ -64,7 +77,6 @@ final class TrendsModel: ObservableObject {
     }
     
     func date(from timeline: Timeline) throws -> Date {
-        let calendar = Calendar(identifier: .iso8601)
         let date: Date?
         switch timeline {
         case .day: date = calendar.dayAgo()

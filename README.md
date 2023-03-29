@@ -12,7 +12,8 @@
 
 ### Network
 + All requests and responses are containing *GH* prefix to indicate resource they are belonging too (*G*it*H*ub) 
-
++ No internet and other network errors are handled in a way user clearly see what is not loaded and with option to repeat request
++ Infinity loading of repositories is done in a way document says - through `Link` response header, however it would be much simplier to manually build next url with providing next page index
 
 ### Unimplemented
 + Using R.swift for generating staticly available resources (assets, colors, fonts, localization, etc)
