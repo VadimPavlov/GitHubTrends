@@ -15,7 +15,12 @@
 + No internet and other network errors are handled in a way user clearly see what is not loaded and with option to repeat request
 + Infinity loading of repositories is done in a way document says - through `Link` response header, however it would be much simplier to manually build next url with providing next page index
 
+### Database
++ Decided to use CoreData, since number of entities may grow up with time
++ Keeped single Entity for Repository + Owner data for simplicity
+
 ### Unimplemented
 + Using R.swift for generating staticly available resources (assets, colors, fonts, localization, etc)
 + Using SwiftLint for code linting
 + CachedAsyncImage uses URLCache which is potentially thread-unsafe 
++ Unit tests
