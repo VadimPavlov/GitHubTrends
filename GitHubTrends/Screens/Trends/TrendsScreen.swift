@@ -18,6 +18,7 @@ struct TrendsScreen: View {
         NavigationView {
             listView
             .navigationTitle("Trends")
+            .searchable(text: $model.searchText)
             .toolbar {
                 ToolbarItem(placement: .principal) {
                     timelineView

@@ -55,10 +55,13 @@ public extension GitHubAPI {
     }
         
     enum SearchQuery {
+        case text(String)
         case created(Comparison, Date)
         
         var value: String {
             switch self {
+            case .text(let text):
+                return text
             case .created(let condition, let date):
                 return "created:\(condition.rawValue)" + GitHubAPI.shortDF.string(from: date)
             }
@@ -76,7 +79,7 @@ public extension GitHubAPI {
     
     typealias SearchRepositoriesResult = Linked<GHSearchResult<GHRepository>>
     func searchRepositories(query: [SearchQuery], sort: SearchSort, order: SearchOrder) async throws -> SearchRepositoriesResult {
-        let query = query.map { $0.value }.joined(separator: "+")
+        let query = query.map { $0.value }.filter { !$0.isEmpty }.joined(separator: "+")
         let request = try self.request(with: "search/repositories",
                                        params: ["q": query, "sort": sort.rawValue, "order": order.rawValue])
         return try await linked(request: request)

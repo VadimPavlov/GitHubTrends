@@ -9,6 +9,7 @@ import Foundation
 import API
 import SwiftUI
 import Utilities
+import Combine
 
 enum ValidationError: LocalizedError {
     case message(String)
@@ -38,8 +39,9 @@ final class TrendsModel: ObservableObject {
 
     @Injected var api: GitHubAPI
     @Published var destination: Destination?
+    @Published var searchText = ""
     @AppStorage("timeline") var timeline: Timeline = .day {
-        didSet { reloadRepositories() }
+        didSet { reloadRepositories() } // no publisher for
     }
         
     lazy var repositories = Paginator<GHRepository>(page: 1, size: 30) { [unowned self] page in
@@ -48,7 +50,7 @@ final class TrendsModel: ObservableObject {
             response = try await self.api.linked(request: URLRequest(url: next))
         } else if page.index == 1 {
             let date = try self.date(from: timeline)
-            response = try await self.api.searchRepositories(query: [.created(.greater, date)],
+            response = try await self.api.searchRepositories(query: [.text(searchText), .created(.greater, date)],
                                                             sort: .stars, order: .desc)
         } else {
             // we reached the last page, there is no link to a next page
@@ -60,10 +62,20 @@ final class TrendsModel: ObservableObject {
     
     private let calendar = Calendar(identifier: .iso8601)
     private var nextRepositories: URL?
+    private var bag = Set<AnyCancellable>()
 
     init(destination: Destination? = nil, repositories: [GHRepository] = []) {
         self.destination = destination
         self.repositories.items = repositories
+
+        $searchText
+            .debounce(for: 0.3, scheduler: RunLoop.main)
+            .map { $0.trimmingCharacters(in: .whitespaces) }
+            .removeDuplicates()
+            .sink { [weak self] text in
+                self?.reloadRepositories()
+            }
+            .store(in: &bag)
     }
     
     func select(repository: GHRepository) {
