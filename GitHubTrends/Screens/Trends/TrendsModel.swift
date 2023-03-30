@@ -56,7 +56,7 @@ final class TrendsModel: ObservableObject {
             // we reached the last page, there is no link to a next page
             return []
         }
-        self.nextRepositories = response.link?.last
+        self.nextRepositories = response.link?.next
         return response.result.items
     }
     
