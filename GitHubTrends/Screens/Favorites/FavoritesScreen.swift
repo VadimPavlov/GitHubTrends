@@ -7,16 +7,54 @@
 
 import SwiftUI
 import API
+import Database
+import UI
+import SwiftUINavigation
 
 struct FavoritesScreen: View {
         
     @ObservedObject var model: FavoritesModel
     
+    @FetchRequest(sortDescriptors: [SortDescriptor(\.intStars, order: .reverse)])
+    private var repositories: FetchedResults<CDRepository>
+    
     var body: some View {
         NavigationView {
-            NavigationLink("Details Screen",
-                           destination: RepositoryDetailScreen(model: .init(repository: .mocks[0])))
+            listView
             .navigationTitle("Favorites")
+            .searchable(text: $model.searchText)
+            .background {
+                // a workaround to avoid multiple NavigationLinks in ForEach
+                // https://github.com/pointfreeco/swiftui-navigation/discussions/2
+                NavigationLink(unwrapping: $model.destination,
+                               case: /FavoritesModel.Destination.detail) { _ in
+                } destination: { $model in
+                    RepositoryDetailScreen(model: model)
+                } label: {
+                    EmptyView()
+                }
+            }
+        }.onChange(of: model.searchText) { _ in
+            repositories.nsPredicate = model.searchPredicate
+        }
+    }
+    
+    @ViewBuilder
+    var listView: some View {
+        if repositories.isEmpty {
+            Text(model.searchText.isEmpty ? "No repositories yet": "No repositories found")
+        } else {
+            ScrollView {
+                LazyVStack {
+                    ForEach(repositories) { repo in
+                        Button {
+                            model.select(repository: repo)
+                        } label: {
+                            RepositoryCell(repository: repo)
+                        }
+                    }
+                }
+            }
         }
     }
 }

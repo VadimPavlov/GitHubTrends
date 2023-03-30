@@ -6,6 +6,8 @@
 //
 
 import Foundation
+import Database
+import CoreData
 
 final class FavoritesModel: ObservableObject {
     
@@ -14,9 +16,17 @@ final class FavoritesModel: ObservableObject {
     }
     
     @Published var destination: Destination?
-    
+    @Published var searchText = ""
+        
     init(destination: Destination? = nil) {
         self.destination = destination
     }
 
+    func select(repository: CDRepository) {
+        self.destination = .detail(RepositoryDetailModel(repository: repository, isFavorite: true))
+    }
+    
+    var searchPredicate: NSPredicate? {
+        searchText.isEmpty ? nil : CDRepository.searchPredicate(text: searchText)
+    }
 }

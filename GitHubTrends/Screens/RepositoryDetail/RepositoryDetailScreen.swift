@@ -7,6 +7,7 @@
 
 import SwiftUI
 import API
+import SwiftUINavigation
 
 struct RepositoryDetailScreen: View {
     
@@ -15,18 +16,25 @@ struct RepositoryDetailScreen: View {
     var body: some View {
             ScrollView {
                 VStack {
+                    if let name = model.repository.name {
+                        Text(name).font(.largeTitle)//.bold()
+                    }
                     Group {
                         headerView
-                        Text(model.repository.fullDescription)
+                        Text(model.repository.decsription2)
                     }.padding()
                 }
             }
-            .navigationTitle(model.repository.name)
+            .alert(unwrapping: $model.destination, case: /RepositoryDetailModel.Destination.alert) {
+                _ in
+            }
             .toolbar {
-                    Link(destination: model.repository.htmlUrl) {
+                if let url = model.repository.htmlUrl {
+                    Link(destination: url) {
                         Image(systemName: "safari")
                     }
-                    favoriteButton
+                }
+                favoriteButton
             }
     }
     
@@ -35,7 +43,9 @@ struct RepositoryDetailScreen: View {
         VStack {
             HStack(alignment: .bottom) {
                 VStack(alignment: .leading) {
-                    Text("Created: \(model.created)")
+                    if let created = model.created {
+                        Text("Created: \(created)")
+                    }
                     if let language = model.repository.language {
                         Text("Language: \(language)")
                     }
@@ -46,7 +56,7 @@ struct RepositoryDetailScreen: View {
                 Group {
                     VStack {
                         Image(systemName: "star.fill")
-                        Text("\(model.repository.stargazersCount)")
+                        Text("\(model.repository.stars)")
                     }
                     VStack {
                         Image(systemName: "arrow.triangle.branch")
@@ -61,7 +71,9 @@ struct RepositoryDetailScreen: View {
         Button(action: {
             withAnimation { model.toogleFavorite() }
         }) {
-            Image(systemName: model.isFavorite ? "heart.fill" : "heart")
+            if let isFavorite = model.isFavorite {
+                Image(systemName: isFavorite ? "heart.fill" : "heart")
+            }
         }
     }
 }

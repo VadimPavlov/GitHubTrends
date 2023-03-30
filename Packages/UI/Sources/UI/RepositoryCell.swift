@@ -8,7 +8,7 @@
 import SwiftUI
 
 public struct RepositoryCell: View {
-    public init(title: String, author: String, avatar: URL?, description: String, stars: Int) {
+    public init(title: String?, author: String?, avatar: URL?, description: String?, stars: Int) {
         self.title = title
         self.author = author
         self.avatar = avatar
@@ -16,10 +16,10 @@ public struct RepositoryCell: View {
         self.stars = stars
     }
     
-    let title: String
-    let author: String
+    let title: String?
+    let author: String?
     let avatar: URL?
-    let description: String
+    let description: String?
     let stars: Int
     
     public var body: some View {
@@ -31,13 +31,19 @@ public struct RepositoryCell: View {
             }.font(.headline)
 
             VStack(alignment: .leading) {
-                Text("@" + author)
-                Text(title).font(.headline)
-                Text(description)
-                    .italic()
-                    .lineLimit(2)
-                    .padding(.top, 1)
-                    .frame(maxWidth: .infinity, alignment: .leading)
+                if let author = author {
+                    Text("@" + author)
+                }
+                if let title = title {
+                    Text(title).font(.headline)
+                }
+                if let description = description {
+                    Text(description)
+                        .italic()
+                        .lineLimit(2)
+                        .padding(.top, 1)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                }
             }
             .multilineTextAlignment(.leading)
         }.padding()

@@ -23,7 +23,6 @@ struct TrendsScreen: View {
                     timelineView
                 }
             }
-            .alert(unwrapping: $model.destination, case: /TrendsModel.Destination.alert) { _ in }
             .background {
                 // a workaround to avoid multiple NavigationLinks in ForEach
                 // https://github.com/pointfreeco/swiftui-navigation/discussions/2
@@ -46,7 +45,6 @@ struct TrendsScreen: View {
             } label: {
                 RepositoryCell(repository: repo)
             }
-
         }
     }
         

@@ -54,8 +54,10 @@ public struct CachedAsyncImage<Content: View, Placeholder: View>: View {
                 self.data = data
             }
         } catch {
-            // TODO: cover an AsyncIamgePhase with .failure case
-            print(error)
+            if !error.isCancelled {
+                // TODO: cover an AsyncIamgePhase with .failure case
+                print(error)
+            }
         }
     }
 

@@ -25,7 +25,6 @@ final class TrendsModel: ObservableObject {
     
     enum Destination {
         case detail(RepositoryDetailModel)
-        case alert(AlertError)
     }
     
     enum Timeline: String, Identifiable, CaseIterable {
@@ -37,16 +36,12 @@ final class TrendsModel: ObservableObject {
         var title: String { rawValue.capitalized } // TODO: use (localized) strings
     }
 
+    @Injected var api: GitHubAPI
     @Published var destination: Destination?
     @AppStorage("timeline") var timeline: Timeline = .day {
-        didSet {
-            nextRepositories = nil
-            repositories.clear()
-            repositories.loadFirst()
-        }
+        didSet { reloadRepositories() }
     }
-    
-    var nextRepositories: URL?
+        
     lazy var repositories = Paginator<GHRepository>(page: 1, size: 30) { [unowned self] page in
         let response: GitHubAPI.SearchRepositoriesResult
         if let next = self.nextRepositories {
@@ -63,9 +58,8 @@ final class TrendsModel: ObservableObject {
         return response.result.items
     }
     
-    // TODO: dependency injection
-    let api = GitHubAPI()
-    let calendar = Calendar(identifier: .iso8601)
+    private let calendar = Calendar(identifier: .iso8601)
+    private var nextRepositories: URL?
 
     init(destination: Destination? = nil, repositories: [GHRepository] = []) {
         self.destination = destination
@@ -86,5 +80,11 @@ final class TrendsModel: ObservableObject {
         
         guard let date = date else { throw ValidationError.message("Can't calculate a date") }
         return date
+    }
+    
+    func reloadRepositories() {
+        nextRepositories = nil
+        repositories.clear()
+        repositories.loadFirst()
     }
 }

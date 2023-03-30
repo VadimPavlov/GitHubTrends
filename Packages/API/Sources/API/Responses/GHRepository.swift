@@ -21,10 +21,10 @@ public struct GHRepository: Decodable, Hashable, Identifiable {
     }
     
     public let id: Int
-    public let name: String
+    public let name: String?
     public let description: String?
     public let createdAt: Date
-    public let htmlUrl: URL
+    public let htmlUrl: URL?
     public let owner: GHOwner
 
     public let stargazersCount: Int
